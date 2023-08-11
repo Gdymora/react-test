@@ -35,7 +35,7 @@ export function Calculator(): JSX.Element {
   const handleButtonClick = (value: string) => {
     switch (value) {
       case '=':
-        calculateResult("");
+        calculateResult();
         break;
       case 'CLEAR':
         clearInput();
@@ -54,7 +54,7 @@ export function Calculator(): JSX.Element {
     }
   };
 
-  const calculateResult = (operator: string) => {
+  const calculateResult = () => {
     if (currentOperator && currentInput) {
       const num1 = parseFloat(currentInput);
       const num2 = parseFloat(
@@ -79,7 +79,7 @@ export function Calculator(): JSX.Element {
           result = num1;
       }
 
-      setCurrentInput(result.toString()+operator);
+      setCurrentInput(result.toString());
       setCurrentOperator('');
     }
   };
@@ -98,16 +98,13 @@ export function Calculator(): JSX.Element {
       setCurrentInput((prevInput) => `${prevInput}${operator}`);
       setCurrentOperator(operator);
     } else if (currentInput && currentOperator) {
-      setCurrentInput((prevInput) => {
-        if (prevInput.endsWith(currentOperator)) {
-          return `${prevInput.slice(0, -1)}${operator}`;
-        } else {
-          setCurrentOperator(operator);
-          calculateResult(operator);
-          return `${currentInput}${operator}`;
-        }
-      });
-      setCurrentOperator(operator);
+      if (currentInput.endsWith(currentOperator)) {
+        setCurrentOperator(operator);
+      } else {
+        calculateResult();
+        setCurrentOperator(operator);
+        setCurrentInput((prevInput) => `${prevInput}${operator}`);
+      }
     }
   };
 
@@ -137,4 +134,4 @@ export function Calculator(): JSX.Element {
       <div className={classes.buttons}>{buttons}</div>
     </div>
   );
-}
+} 
